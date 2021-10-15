@@ -1,14 +1,16 @@
 import csv
 
-delta = 0.08
+deltaG = 0.2
+delta = 0.1
+deltaC = 0.05
 C, U, G, A, m1G, m2G, I, ho5U = (0.6, 1.2, 3.3, 3.6, 4.68, 4.91, 3.14, 0.90)
-rna_values = { (C-delta, C+delta): 'C', (G-delta, G+delta): 'G', (A-delta, A+delta): 'A', (U-delta, U+delta): 'U'}
+rna_values = { (C-deltaC, C+deltaC): 'C', (G-deltaG, G+deltaG): 'G', (A-delta, A+delta): 'A', (U-delta, U+delta): 'U'}
 data = { 'C': [], 'G': [], 'A': [], 'U': [], 'm1G': [], 'm2G': [], 'I': [], 'ho5U': []}
 ms_filters = ['298.0 -> 166.0', '269.0 -> 137.0', '261.0 -> 129.0']
 
 
 def parseUV():
-    filename = "data2.csv"
+    filename = "LCMS1//96plate//02_A1_UV_104.csv"
     
     # initializing the titles and rows list
     fields = []
@@ -66,11 +68,12 @@ def parseMS():
 
         if (len(row) == 2):
             for col in row:
-                for ms_filter in ms_filters:
+                for j in range(len(ms_filters)):
+                    ms_filter = ms_filters[j]
                     if ms_filter in col:
                         divider_indices.append(i)
         
-    print(divider_indices)
+    
 
 parseUV()
 parseMS()
@@ -79,9 +82,12 @@ parseMS()
 
 # print results
 print("#############---- Results ----##############")
+lengths = []
 for pair in data:
     s = f"{pair} || "
     for area_val in data[pair]:
         s += f"{area_val}, "
+    lengths.append(len(data[pair]))
     s += "\n"
     print(s)
+print("lengths", lengths)
