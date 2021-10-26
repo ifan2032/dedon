@@ -1,16 +1,19 @@
 import csv
 
-deltaG = 0.2
-delta = 0.1
+deltaG = 0.15
+deltaA = 0.10
+deltaU = 0.10
 deltaC = 0.05
-C, U, G, A, m1G, m2G, I, ho5U = (0.6, 1.2, 3.3, 3.6, 4.68, 4.91, 3.14, 0.90)
-rna_values = { (C-deltaC, C+deltaC): 'C', (G-deltaG, G+deltaG): 'G', (A-delta, A+delta): 'A', (U-delta, U+delta): 'U'}
+delta = 0.05
+deltaI = 0.20
+C, U, G, A, m1G, m2G, I, ho5U = (0.6, 1.2, 3.3, 3.5, 4.67, 4.905, 3.556, 0.90)
+rna_values = { (C-deltaC, C+deltaC): 'C', (G-deltaG, G+deltaG): 'G', (A-deltaA, A+deltaA): 'A', (U-deltaU, U+deltaU): 'U'}
 data = { 'C': [], 'G': [], 'A': [], 'U': [], 'm1G': [], 'm2G': [], 'I': [], 'ho5U': []}
-ms_filters = ['298.0 -> 166.0', '269.0 -> 137.0', '261.0 -> 129.0']
-
+ms_filters = {'298.0 -> 166.0': 0, '269.0 -> 137.0': 1, '261.0 -> 129.0': 2}
+ms_values = {(m1G-delta, m1G+delta): 'm1G', (m2G-delta, m2G+delta): 'm2G', (I-deltaI, I+deltaI): 'I', (ho5U-delta, ho5U+delta): 'ho5U'}
 
 def parseUV():
-    filename = "LCMS1//96plate//02_A1_UV_104.csv"
+    filename = "LCMS1//101421 Leon practice/02_WT_rRNA_UV_5.csv"
     
     # initializing the titles and rows list
     fields = []
@@ -44,7 +47,7 @@ def parseUV():
     return
 
 def parseMS():
-    filename = "data1.csv"
+    filename = "LCMS1//101421 Leon practice/02_WT_rRNA_MS_5.csv"
     
     # initializing the titles and rows list
     fields = []
@@ -62,17 +65,62 @@ def parseMS():
         for row in csvreader:
             rows.append(row)
 
-    divider_indices = []
+    divider_indices = [ [], [], [] ] #[0] stores 298->166, [1] stores 269->137, [2] stores 261->129 
+    divider_indices_two = []
     for i in range(len(rows)):
         row = rows[i]
 
         if (len(row) == 2):
+            divider_indices_two.append(i)
+
             for col in row:
-                for j in range(len(ms_filters)):
-                    ms_filter = ms_filters[j]
-                    if ms_filter in col:
-                        divider_indices.append(i)
-        
+                for j in list(ms_filters.keys()):
+                    if j in col:
+                        divider_indices[ms_filters[j]].append(i)
+
+    print(divider_indices)
+    for k in range(len(divider_indices)):
+        countera = 0
+        for divider_index in divider_indices[k]:
+            countera += 1
+            stop_index = divider_indices_two[divider_indices_two.index(divider_index)+1]
+
+            isFound = False 
+            curRow = 0 
+            counter = 0
+
+            for index in range(divider_index+2, stop_index):
+                row = rows[index]
+
+                if len(row) == 0:
+                    continue
+                rt = float(row[3])
+
+                if k == 0:
+                    for (start, end) in list(ms_values.keys())[0:2]:
+                        if start <= rt and rt <= end:
+                            data[ms_values[(start, end)]].append(float(row[6]))
+                elif k == 1:
+                    for (start, end) in list(ms_values.keys())[2:3]:
+                        if start <= rt and rt <= end and not isFound:
+                            data[ms_values[(start, end)]].append(float(row[6]))
+                            isFound = True
+                else:
+                    counter += 1
+                    for (start, end) in list(ms_values.keys())[3:4]:
+                        if start <= rt and rt <= end and not isFound:
+                            data[ms_values[(start, end)]].append(float(row[6]))
+                            isFound = True
+
+                if isFound:
+                    break
+            
+                
+
+        print("countera", countera)
+
+
+
     
 
 parseUV()
@@ -83,6 +131,18 @@ parseMS()
 # print results
 print("#############---- Results ----##############")
 lengths = []
+
+
+for i in range(len(data["A"])):
+    s = ""
+    for j in ['U', 'G', 'A']:
+        s += f"{data[j][i]}, "
+    s += "\n"
+    print(s)
+
+print(len(data['m1G']), len(data['I']), len(data['ho5U']))
+
+'''
 for pair in data:
     s = f"{pair} || "
     for area_val in data[pair]:
@@ -90,4 +150,10 @@ for pair in data:
     lengths.append(len(data[pair]))
     s += "\n"
     print(s)
-print("lengths", lengths)
+print(lengths)'''
+
+
+with open('results2.csv', 'w') as f:
+    for key in data.keys():
+        f.write("%s,%s\n"%(key,data[key]))
+
