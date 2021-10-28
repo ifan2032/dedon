@@ -5,8 +5,8 @@ deltaA = 0.10
 deltaU = 0.10
 deltaC = 0.05
 delta = 0.05
-deltaI = 0.20
-C, U, G, A, m1G, m2G, I, ho5U = (0.6, 1.2, 3.3, 3.5, 4.67, 4.905, 3.556, 0.90)
+deltaI = 0.10
+C, U, G, A, m1G, m2G, I, ho5U = (0.6, 1.2, 3.3, 3.5, 4.67, 4.905, 3.123, 0.90)
 rna_values = { (C-deltaC, C+deltaC): 'C', (G-deltaG, G+deltaG): 'G', (A-deltaA, A+deltaA): 'A', (U-deltaU, U+deltaU): 'U'}
 data = { 'C': [], 'G': [], 'A': [], 'U': [], 'm1G': [], 'm2G': [], 'I': [], 'ho5U': []}
 ms_filters = {'298.0 -> 166.0': 0, '269.0 -> 137.0': 1, '261.0 -> 129.0': 2}
@@ -30,9 +30,42 @@ def parseUV():
         # extracting each data row one by one
         for row in csvreader:
             rows.append(row)
+        
+    divider_indices = []
+    for i in range(len(rows)):
+        row = rows[i]
+
+        if (len(row) == 2):
+            divider_indices.append(i)
+
+    divider_indices.append(len(rows))
+    divider_indices.insert(0, 0)
+
+    print(divider_indices)
 
     time_index, area_index = rows[0].index("RT"), rows[0].index("Area")
 
+    for index in range(len(divider_indices)-1):
+        tmp_data = { (C-deltaC, C+deltaC): '-', (G-deltaG, G+deltaG): '-', (A-deltaA, A+deltaA): '-', (U-deltaU, U+deltaU): '-'}
+
+        for row_index in range(divider_indices[index], divider_indices[index+1]):
+            row = rows[row_index] 
+            if not "RT" in row and not "Area" in row and len(row) > max(time_index, area_index):
+                time = float(row[time_index])
+                area = float(row[area_index])
+                for (start, end) in rna_values:
+                    if start <= time and time <= end:
+                        tmp_data[(start, end)] = area
+                        break
+        
+        for (start, end) in tmp_data:
+            val = tmp_data[(start, end)]
+            
+            data[rna_values[(start, end)]].append(val)
+
+            
+
+    '''
     for row in rows[1:]:
         # parsing each column of a row
         #for col in row:
@@ -44,6 +77,8 @@ def parseUV():
                 if start <= time and time <= end:
                     data[rna_values[(start, end)]].append(area)
                     break
+    ''' 
+
     return
 
 def parseMS():
@@ -78,7 +113,6 @@ def parseMS():
                     if j in col:
                         divider_indices[ms_filters[j]].append(i)
 
-    print(divider_indices)
     for k in range(len(divider_indices)):
         countera = 0
         for divider_index in divider_indices[k]:
@@ -108,7 +142,7 @@ def parseMS():
                 else:
                     counter += 1
                     for (start, end) in list(ms_values.keys())[3:4]:
-                        if start <= rt and rt <= end and not isFound:
+                        if start <= rt and rt <= end and not isFound and float(row[6]) > 200:
                             data[ms_values[(start, end)]].append(float(row[6]))
                             isFound = True
 
@@ -117,7 +151,6 @@ def parseMS():
             
                 
 
-        print("countera", countera)
 
 
 
@@ -131,7 +164,6 @@ parseMS()
 # print results
 print("#############---- Results ----##############")
 lengths = []
-
 
 for i in range(len(data["A"])):
     s = ""
