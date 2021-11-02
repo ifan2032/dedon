@@ -3,7 +3,7 @@ import csv
 # Exclude everything that starts with cpd 
 
 # Change As Necessary
-deltaG, deltaA, deltaU, deltaC, deltaI, delta = 0.15, 0.10, 0.10, 0.05, 0.4, 0.4
+deltaG, deltaA, deltaU, deltaC, deltaI, delta = 0.15, 0.10, 0.10, 0.05, 0.4, 0.15
 C, U, G, A, m1G, m2G, I, ho5U = (0.6, 1.2, 3.3, 3.5, 4.67, 4.922, 3.123, 0.90)
 
 rna_values = { (C-deltaC, C+deltaC): 'C', (G-deltaG, G+deltaG): 'G', (A-deltaA, A+deltaA): 'A', (U-deltaU, U+deltaU): 'U'}
@@ -85,10 +85,12 @@ def parseMS():
         if (len(row) == 2):
             divider_indices_two.append(i)
 
-            for col in row:
-                for j in list(ms_filters.keys()):
-                    if j in col:
-                        divider_indices[ms_filters[j]].append(i)
+            tag = row[-1][0:4]
+            if 'Cpd' not in tag:
+                for col in row:
+                    for j in list(ms_filters.keys()):
+                        if j in col:
+                            divider_indices[ms_filters[j]].append(i)
 
     for k in range(len(divider_indices)):
         countera = 0
@@ -113,6 +115,7 @@ def parseMS():
                 if k == 0:
                     for (start, end) in list(ms_values.keys())[0:2]:
                         if start <= rt and rt <= end:
+                            print(rt, start, end)
                             data[ms_values[(start, end)]].append(float(row[6]))
                             ms_data[name][ms_values[(start, end)]].append(float(row[6]))
                             isFound = True
