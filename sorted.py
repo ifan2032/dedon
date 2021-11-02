@@ -1,8 +1,5 @@
 import csv
 
-# Exclude everything that starts with cpd 
-
-# Change As Necessary
 deltaG, deltaA, deltaU, deltaC, deltaI, delta = 0.15, 0.10, 0.10, 0.05, 0.4, 0.15
 C, U, G, A, m1G, m2G, I, ho5U = (0.6, 1.2, 3.3, 3.5, 4.67, 4.922, 3.123, 0.90)
 
@@ -115,21 +112,20 @@ def parseMS():
                 if k == 0:
                     for (start, end) in list(ms_values.keys())[0:2]:
                         if start <= rt and rt <= end:
-                            print(rt, start, end)
-                            data[ms_values[(start, end)]].append(float(row[6]))
+                            #data[ms_values[(start, end)]].append(float(row[6]))
                             ms_data[name][ms_values[(start, end)]].append(float(row[6]))
                             isFound = True
                 elif k == 1:
                     for (start, end) in list(ms_values.keys())[2:3]:
                         if start <= rt and rt <= end and not isFound:
-                            data[ms_values[(start, end)]].append(float(row[6]))
+                            #data[ms_values[(start, end)]].append(float(row[6]))
                             ms_data[name][ms_values[(start, end)]].append(float(row[6]))
                             isFound = True
                 else:
                     counter += 1
                     for (start, end) in list(ms_values.keys())[3:4]:
                         if start <= rt and rt <= end and not isFound and float(row[6]) > 200:
-                            data[ms_values[(start, end)]].append(float(row[6]))
+                            #data[ms_values[(start, end)]].append(float(row[6]))
                             ms_data[name][ms_values[(start, end)]].append(float(row[6]))
                             isFound = True
 
@@ -137,8 +133,14 @@ def parseMS():
                     break
             
     for keys,values in ms_data.items():
-        print(keys)
-        print(values)
+        print("keys", keys)
+        print("values", values)
+    
+    for row in data['Columns']:
+        values = ms_data[row]
+
+        for strain in values:
+            data[strain].append(values[strain])
 parseUV()
 parseMS()
 
