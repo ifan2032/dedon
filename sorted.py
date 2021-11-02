@@ -89,19 +89,19 @@ def parseMS():
                         if j in col:
                             divider_indices[ms_filters[j]].append(i)
 
+
     for k in range(len(divider_indices)):
         countera = 0
         a = 0
         for divider_index in divider_indices[k]:
             countera += 1
             stop_index = divider_indices_two[divider_indices_two.index(divider_index)+1]
-
-            isFound = False 
             curRow = 0 
             counter = 0
             a += 1
             for index in range(divider_index+2, stop_index):
                 row = rows[index]
+
 
                 if len(row) == 0:
                     continue
@@ -114,27 +114,15 @@ def parseMS():
                         if start <= rt and rt <= end:
                             #data[ms_values[(start, end)]].append(float(row[6]))
                             ms_data[name][ms_values[(start, end)]].append(float(row[6]))
-                            isFound = True
                 elif k == 1:
                     for (start, end) in list(ms_values.keys())[2:3]:
-                        if start <= rt and rt <= end and not isFound:
-                            #data[ms_values[(start, end)]].append(float(row[6]))
+                        if start <= rt and rt <= end:
                             ms_data[name][ms_values[(start, end)]].append(float(row[6]))
-                            isFound = True
                 else:
                     counter += 1
                     for (start, end) in list(ms_values.keys())[3:4]:
-                        if start <= rt and rt <= end and not isFound and float(row[6]) > 200:
-                            #data[ms_values[(start, end)]].append(float(row[6]))
+                        if start <= rt and rt <= end and float(row[6]) > 200:
                             ms_data[name][ms_values[(start, end)]].append(float(row[6]))
-                            isFound = True
-
-                if isFound:
-                    break
-            
-    for keys,values in ms_data.items():
-        print("keys", keys)
-        print("values", values)
     
     for row in data['Columns']:
         values = ms_data[row]
