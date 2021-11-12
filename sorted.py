@@ -1,14 +1,8 @@
 import csv
+import copy 
 
-deltaG, deltaA, deltaU, deltaC, deltaI, delta = 0.15, 0.10, 0.10, 0.05, 0.4, 0.15
-C, U, G, A, m1G, m2G, I, ho5U = (0.6, 1.2, 3.3, 3.5, 4.67, 4.922, 3.123, 0.90)
+from inputs import *
 
-rna_values = { (C-deltaC, C+deltaC): 'C', (G-deltaG, G+deltaG): 'G', (A-deltaA, A+deltaA): 'A', (U-deltaU, U+deltaU): 'U'}
-data = { 'Columns': [], 'C': [], 'G': [], 'A': [], 'U': [], 'm1G': [], 'm2G': [], 'I': [], 'ho5U': []}
-ms_filters = {'298.0 -> 166.0': 0, '269.0 -> 137.0': 1, '261.0 -> 129.0': 2}
-ms_values = {(m1G-delta, m1G+delta): 'm1G', (m2G-delta, m2G+delta): 'm2G', (I-deltaI, I+deltaI): 'I', (ho5U-delta, ho5U+delta): 'ho5U'}
-
-files = ["LCMS1//96plate//02_A1_UV_104.csv", "LCMS1//96plate//02_A1_MS_104.csv"]
 
 def parseUV():
     filename = files[0]
@@ -34,8 +28,8 @@ def parseUV():
     time_index, area_index = rows[0].index("RT"), rows[0].index("Area")
 
     for index in range(len(divider_indices)-1):
-        tmp_data = { (C-deltaC, C+deltaC): '-', (G-deltaG, G+deltaG): '-', (A-deltaA, A+deltaA): '-', (U-deltaU, U+deltaU): '-'}
-
+        #tmp_data = { (C-deltaC, C+deltaC): '-', (G-deltaG, G+deltaG): '-', (A-deltaA, A+deltaA): '-', (U-deltaU, U+deltaU): '-'}
+        tmp_data = copy.deepcopy(rna_values)
         for row_index in range(divider_indices[index], divider_indices[index+1]):
             row = rows[row_index]
 
@@ -61,8 +55,12 @@ def parseMS():
 
     ms_data = {}
     for column in data['Columns']:
-        ms_data[column] = { 'm1G': [], 'm2G': [], 'I': [], 'ho5U': [] } # m1G, m2G, I, ho5U
-    
+        ms_tmp = {} 
+        for i in range(4, len(var_names)):
+            name = var_names[i]
+            ms_tmp[name] = []
+        ms_data[column] = ms_tmp # m1G, m2G, I, ho5U
+        
     filename = files[1]
     fields = []
     rows = []
@@ -73,8 +71,7 @@ def parseMS():
 
         for row in csvreader:
             rows.append(row)
-
-    divider_indices = [ [], [], [] ] #[0] stores 298->166, [1] stores 269->137, [2] stores 261->129 
+    divider_indices = [ [] for _ in range(len(ms_filters.keys())) ] #[0] stores 298->166, [1] stores 269->137, [2] stores 261->129 
     divider_indices_two = []
     for i in range(len(rows)):
         row = rows[i]
@@ -87,8 +84,7 @@ def parseMS():
                 for col in row:
                     for j in list(ms_filters.keys()):
                         if j in col:
-                            divider_indices[ms_filters[j]].append(i)
-
+                            divider_indices[ms_filters_keys.index(j)].append(i)
 
     for k in range(len(divider_indices)):
         countera = 0
@@ -109,30 +105,25 @@ def parseMS():
 
                 name = row[0].split('\\')[-1].strip()
                 
-                if k == 0:
-                    for (start, end) in list(ms_values.keys())[0:2]:
-                        if start <= rt and rt <= end:
-                            #data[ms_values[(start, end)]].append(float(row[6]))
-                            ms_data[name][ms_values[(start, end)]].append(float(row[6]))
-                elif k == 1:
-                    for (start, end) in list(ms_values.keys())[2:3]:
-                        if start <= rt and rt <= end:
-                            ms_data[name][ms_values[(start, end)]].append(float(row[6]))
-                else:
-                    counter += 1
-                    for (start, end) in list(ms_values.keys())[3:4]:
-                        if start <= rt and rt <= end and float(row[6]) > 200:
-                            ms_data[name][ms_values[(start, end)]].append(float(row[6]))
+                for (start, end) in list(ms_values.keys()):
+                    if start <= rt and rt <= end and ms_values[(start, end)] in ms_filters[ms_filters_keys[k]]:
+                        ms_data[name][ms_values[(start, end)]].append(float(row[6]))
     
     for row in data['Columns']:
         values = ms_data[row]
 
         for strain in values:
-            data[strain].append(values[strain])
+            if (len(values[strain]) == 1):
+                data[strain].append(values[strain][0])
+            else:
+                data[strain].append(values[strain])
+# Call Methods 
+
 parseUV()
 parseMS()
 
 print("#############---- Results ----##############")
+
 lengths = {}
 
 for pair in data:
@@ -144,8 +135,11 @@ for pair in data:
 
 print(lengths)
 
+# Export 
 
 with open('results2.csv', 'w') as f:
     for key in data.keys():
         f.write("%s,%s\n"%(key,data[key]))
+
+
 
