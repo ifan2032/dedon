@@ -51,11 +51,58 @@ for i in range(4, len(var_names)):
     rt = variables[f"rt_{name}"]
     ms_values[(rt - delta, rt + delta)] = name
 
+#s_filters = {'298.0 -> 166.0': ['m1G', 'm2G'], '269.0 -> 137.0': ['I'], '261.0 -> 129.0': ['ho5U'], '260.0 -> 128.0': ['s2C'], '257.0 -> 141.0': ['15N-dA'], '286.0 -> 154.0': ['ac4C'] }
+ms_filters_keys = [
+    '298.0 -> 166.0', 
+    '269.0 -> 137.0', 
+    '261.0 -> 129.0', 
+    '260.0 -> 128.0',
+    '257.0 -> 141.0', 
+    '286.0 -> 154.0', 
+    '346.0 -> 214.0', 
+    '282.0 -> 136.0', 
+    '258.0 -> 112.0', 
+    '303.1 -> 171.0', 
+    '317.0 -> 171.0', 
+    '348.0 -> 141.0',
+    '348.0 -> 216.0',
+    '332.0 -> 200.0',
+    '346.1 -> 200.1',
+    '319.0 -> 187.0',
+    '395.1 -> 236.1',
+    '247.0 -> 115.0',
+    '247.0 -> 94.0'
+]
 
-print(rna_values, ms_values)
+ms_filters_name = [ 
+    ['m1G', 'm2G'], 
+    ['I'], 
+    ['ho5U'], 
+    ['s2C'], 
+    ['15N-dA'], 
+    ['ac4C'], 
+    ['acp3U'], 
+    ['Am'], 
+    ['Cm'], 
+    ['cm5U'], 
+    ['cm5Um'], 
+    ['cmnm5s2U_141'],
+    ['cmnm5s2U_216'],
+    ['cmnm5U'],
+    ['cmnm5Um'],
+    ['cmo5U'],
+    ['ct6A'],
+    ['D_115'],
+    ['D_97']
+]
 
-ms_filters = {'298.0 -> 166.0': ['m1G', 'm2G'], '269.0 -> 137.0': ['I'], '261.0 -> 129.0': ['ho5U']}
-ms_filters_keys = ['298.0 -> 166.0', '269.0 -> 137.0', '261.0 -> 129.0']
-# ms_filters = {'298.0 -> 166.0': 0, '269.0 -> 137.0': 1, '261.0 -> 129.0': 2}
+for row in rows:
+    print(len(row))
 
-# is there a way to implement filers without specifying the need for timelines
+
+ms_filters = {}
+for ms_filters_key in ms_filters_keys:
+    ms_filters[ms_filters_key] = ms_filters_name[ms_filters_keys.index(ms_filters_key)]
+
+print(ms_filters)
+

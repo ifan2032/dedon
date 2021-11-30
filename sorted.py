@@ -59,7 +59,7 @@ def parseMS():
         for i in range(4, len(var_names)):
             name = var_names[i]
             ms_tmp[name] = []
-        ms_data[column] = ms_tmp # m1G, m2G, I, ho5U
+        ms_data[column] = ms_tmp
         
     filename = files[1]
     fields = []
@@ -71,7 +71,7 @@ def parseMS():
 
         for row in csvreader:
             rows.append(row)
-    divider_indices = [ [] for _ in range(len(ms_filters.keys())) ] #[0] stores 298->166, [1] stores 269->137, [2] stores 261->129 
+    divider_indices = [ [] for _ in range(len(ms_filters.keys())) ]
     divider_indices_two = []
     for i in range(len(rows)):
         row = rows[i]
@@ -108,15 +108,22 @@ def parseMS():
                 for (start, end) in list(ms_values.keys()):
                     if start <= rt and rt <= end and ms_values[(start, end)] in ms_filters[ms_filters_keys[k]]:
                         ms_data[name][ms_values[(start, end)]].append(float(row[6]))
+
     
     for row in data['Columns']:
         values = ms_data[row]
 
         for strain in values:
+            if len(values[strain]) != 0:
+                data[strain].append(max(values[strain]))
+            else:
+                data[strain].append(values[strain])
+            ''' 
             if (len(values[strain]) == 1):
                 data[strain].append(values[strain][0])
             else:
-                data[strain].append(values[strain])
+                data[strain].append(max(values[strain]))
+            '''
 # Call Methods 
 
 parseUV()
@@ -124,13 +131,25 @@ parseMS()
 
 print("#############---- Results ----##############")
 
+#find highest peak or closest to retention time
+
 lengths = {}
 
 for pair in data:
     s = 0
+
     for area_val in data[pair]:
-        if area_val == '-':
+        if area_val == '-' or area_val == []:
             s += 1
+        
+        if type(area_val) == list:
+            s -= (len(area_val) - 1)
+
+            '''
+            if pair == 'ho5U':
+                print(data["Columns"][data[pair].index(area_val)])
+            '''
+
     lengths[pair] = len(data[pair]) - s
 
 print(lengths)
