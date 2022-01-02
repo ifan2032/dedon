@@ -143,6 +143,7 @@ for pair in data:
             s += 1
         
         if type(area_val) == list:
+
             s -= (len(area_val) - 1)
 
             '''
