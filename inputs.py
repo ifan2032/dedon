@@ -1,21 +1,22 @@
 import csv 
 
 variables = {}
-
+files = []
+rna_values = {}
+ms_values = {}
 rows = []
+data = { 'Columns': [] }
+
+
 with open("input.csv", 'r') as csvfile:
     csvreader = csv.reader(csvfile)
     for row in csvreader:
         rows.append(row)
 
-
-
 # row1 : variable names
 var_names = []
 for item in rows[0]:
     var_names.append(item.strip())
-
-print(len(rows[0]), len(rows[1]), len(rows[2]))
 
 # row2: retention times
 for index in range(len(rows[1])):
@@ -30,17 +31,11 @@ for index in range(len(rows[2])):
     variables[f"delta_{name}"] = float(delta)
 
 # last row: file names
-files = []
 for file_name in rows[-1]:
     files.append(file_name.strip())
 
-data = { 'Columns': [] }
 for var in var_names:
     data[var] = []
-
-rna_values = {}
-ms_values = {}
-
 
 for i in range(0, 4):
     name = var_names[i]
@@ -54,7 +49,6 @@ for i in range(4, len(var_names)):
     rt = variables[f"rt_{name}"]
     ms_values[(rt - delta, rt + delta)] = name
 
-#s_filters = {'298.0 -> 166.0': ['m1G', 'm2G'], '269.0 -> 137.0': ['I'], '261.0 -> 129.0': ['ho5U'], '260.0 -> 128.0': ['s2C'], '257.0 -> 141.0': ['15N-dA'], '286.0 -> 154.0': ['ac4C'] }
 ms_filters_keys = [
     '298.0 -> 166.0', 
     '269.0 -> 137.0', 
@@ -165,17 +159,19 @@ ms_filters_name = [
     ['t6A'],
     ['Um'],
     ['Y_191']
-    
-
 ]
 
+''' For checking row inputs are valid
 for row in rows:
     print(len(row))
+'''
 
+# directly checks if input values are valid, else throws error
+if len(rows[0]) != len(rows[1]) or len(rows[1]) != len(rows[2]) or len(rows[-1]) != 2:
+    raise ValueError("Invalid inputs")
 
 ms_filters = {}
 for ms_filters_key in ms_filters_keys:
     ms_filters[ms_filters_key] = ms_filters_name[ms_filters_keys.index(ms_filters_key)]
 
-print(ms_filters)
 

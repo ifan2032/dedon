@@ -1,8 +1,6 @@
 import csv
-import copy 
-
+import copy
 from inputs import *
-
 
 def parseUV():
     filename = files[0]
@@ -118,12 +116,7 @@ def parseMS():
                 data[strain].append(max(values[strain]))
             else:
                 data[strain].append(values[strain])
-            ''' 
-            if (len(values[strain]) == 1):
-                data[strain].append(values[strain][0])
-            else:
-                data[strain].append(max(values[strain]))
-            '''
+
 # Call Methods 
 
 parseUV()
@@ -131,7 +124,7 @@ parseMS()
 
 print("#############---- Results ----##############")
 
-#find highest peak or closest to retention time
+#find highest peak 
 
 lengths = {}
 
@@ -149,6 +142,9 @@ for pair in data:
     lengths[pair] = len(data[pair]) - s
 
 print(lengths)
+
+print("#############---- End ----##############")
+
 
 # Export 
 
