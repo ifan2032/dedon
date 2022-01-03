@@ -146,18 +146,13 @@ for pair in data:
 
             s -= (len(area_val) - 1)
 
-            '''
-            if pair == 'ho5U':
-                print(data["Columns"][data[pair].index(area_val)])
-            '''
-
     lengths[pair] = len(data[pair]) - s
 
 print(lengths)
 
 # Export 
 
-with open('results2.csv', 'w') as f:
+with open('results.csv', 'w') as f:
     for key in data.keys():
         f.write("%s,%s\n"%(key,data[key]))
 
