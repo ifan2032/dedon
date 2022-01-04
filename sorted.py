@@ -148,9 +148,11 @@ print("#############---- End ----##############")
 
 # Export 
 
+print(data)
+
 with open('results.csv', 'w') as f:
     for key in data.keys():
-        f.write("%s,%s\n"%(key,data[key]))
+        f.write("%s,%s\n"%(key,','.join([str(obj) for obj in data[key]])))
 
 
 
