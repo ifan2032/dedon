@@ -26,7 +26,6 @@ def parseUV():
     time_index, area_index = rows[0].index("RT"), rows[0].index("Area")
 
     for index in range(len(divider_indices)-1):
-        #tmp_data = { (C-deltaC, C+deltaC): '-', (G-deltaG, G+deltaG): '-', (A-deltaA, A+deltaA): '-', (U-deltaU, U+deltaU): '-'}
         tmp_data = copy.deepcopy(rna_values)
         for row_index in range(divider_indices[index], divider_indices[index+1]):
             row = rows[row_index]
@@ -46,7 +45,10 @@ def parseUV():
         for (start, end) in tmp_data:
             val = tmp_data[(start, end)]
             
-            data[rna_values[(start, end)]].append(val)
+            if type(val) == str:
+                data[rna_values[(start, end)]].append([])
+            else:
+                data[rna_values[(start, end)]].append(val)
     return
 
 def parseMS():
