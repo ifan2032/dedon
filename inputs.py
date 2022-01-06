@@ -36,7 +36,11 @@ for file_name in rows[-1]:
     files.append(file_name.strip())
 
 for var in var_names:
-    data[var] = []
+    if var == 'GA':
+        data['G'] = []
+        data['A'] = []
+    else:
+        data[var] = []
 
 for i in range(0, 4):
     name = var_names[i]

@@ -25,8 +25,12 @@ def parseUV():
 
     time_index, area_index = rows[0].index("RT"), rows[0].index("Area")
 
+    print("rna_values", rna_values)
     for index in range(len(divider_indices)-1):
-        tmp_data = copy.deepcopy(rna_values)
+        area_data = copy.deepcopy(rna_values)
+        for key in area_data:
+            area_data[key] = []
+        
         for row_index in range(divider_indices[index], divider_indices[index+1]):
             row = rows[row_index]
 
@@ -39,16 +43,26 @@ def parseUV():
                 area = float(row[area_index])
                 for (start, end) in rna_values:
                     if start <= time and time <= end:
-                        tmp_data[(start, end)] = area
-                        break
+                        area_data[(start, end)].append(area)
+                        #print(rna_values[(start, end)], area)
         
-        for (start, end) in tmp_data:
-            val = tmp_data[(start, end)]
+        print(area_data)
+        for (start, end) in area_data:
+            val = area_data[(start, end)]
+            name = rna_values[(start, end)]
             
-            if type(val) == str:
+            print(name)
+            if name == 'GA':
+                if len(val) == 0:
+                    data['G'].append([])
+                    data['A'].append([])
+                else:
+                    data['G'].append(val[0])
+                    data['A'].append(val[1])
+            elif len(val) == 0:
                 data[rna_values[(start, end)]].append([])
             else:
-                data[rna_values[(start, end)]].append(val)
+                data[rna_values[(start, end)]].append(max(val))
     return
 
 def parseMS():
