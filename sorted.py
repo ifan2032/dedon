@@ -25,7 +25,6 @@ def parseUV():
 
     time_index, area_index = rows[0].index("RT"), rows[0].index("Area")
 
-    print("rna_values", rna_values)
     for index in range(len(divider_indices)-1):
         area_data = copy.deepcopy(rna_values)
         for key in area_data:
@@ -44,16 +43,13 @@ def parseUV():
                 for (start, end) in rna_values:
                     if start <= time and time <= end:
                         area_data[(start, end)].append(area)
-                        #print(rna_values[(start, end)], area)
         
-        print(area_data)
         for (start, end) in area_data:
             val = area_data[(start, end)]
             name = rna_values[(start, end)]
             
-            print(name)
             if name == 'GA':
-                if len(val) == 0:
+                if len(val) <= 1:
                     data['G'].append([])
                     data['A'].append([])
                 else:
@@ -156,8 +152,6 @@ for pair in data:
             s -= (len(area_val) - 1)
 
     lengths[pair] = len(data[pair]) - s
-
-print(lengths)
 
 print("#############---- End ----##############")
 

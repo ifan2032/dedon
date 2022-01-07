@@ -172,7 +172,7 @@ for row in rows:
 '''
 
 # directly checks if input values are valid, else throws error
-if len(rows[0]) != len(rows[1]) or len(rows[1]) != len(rows[2]) or len(rows[-1]) != 2:
+if len(rows[0]) != len(rows[1]) or len(rows[1]) != len(rows[2]):
     raise ValueError("Invalid inputs")
 
 ms_filters = {}
