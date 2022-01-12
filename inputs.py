@@ -23,13 +23,14 @@ for item in rows[0]:
 for index in range(len(rows[1])):
     rt = rows[1][index]
     name = var_names[index]
-    variables[f"rt_{name}"] = float(rt)
+    variables[f"rt_{name}"] = float(rt.strip())
 
 # row3: deltas
 for index in range(len(rows[2])):
     delta = rows[2][index]
     name = var_names[index]
-    variables[f"delta_{name}"] = float(delta)
+    variables[f"delta_{name}"] = float(delta.strip())
+
 
 # last row: file names
 for file_name in rows[-1]:
@@ -42,17 +43,22 @@ for var in var_names:
     else:
         data[var] = []
 
-for i in range(0, 4):
+for i in range(0, 3):
     name = var_names[i]
     delta = variables[f"delta_{name}"]
     rt = variables[f"rt_{name}"]
     rna_values[(rt - delta, rt + delta)] = name
 
-for i in range(4, len(var_names)):
+for i in range(3, len(var_names)):
     name = var_names[i]
+        
     delta = variables[f"delta_{name}"]
     rt = variables[f"rt_{name}"]
-    ms_values[(rt - delta, rt + delta)] = name
+
+    if (rt - delta, rt + delta) in ms_values:
+        ms_values[(rt - delta, rt + delta)].append(name)
+    else:
+        ms_values[(rt - delta, rt + delta)] = [name]
 
 ms_filters_keys = [
     '298.0 -> 166.0', 
@@ -76,14 +82,18 @@ ms_filters_keys = [
     '247.0 -> 97.0', 
     '369.1 -> 136.1', 
     '298.0 -> 152.0', 
-    '336.0 -> 204.0', 
+    '336.0 -> 204.0',
+    '322.1 -> 190.1', 
+    '342.3 -> 210.0',
     '352.1 -> 220.0', 
+    '372.1 -> 240.1',
     '282.0 -> 150.0',
     '326.0 -> 194.0',
     '312.0 -> 180.0',
     '296.0 -> 164.0',
     '258.0 -> 126.0',
-    '259.0 -> 127.0', 
+    '259.0 -> 127.0',
+    '272.1 -> 126.1',
     '275.0 -> 143.0',
     '273.0 -> 127.0', 
     '296.1 -> 150.0', 
@@ -95,6 +105,7 @@ ms_filters_keys = [
     '333.0 -> 315.0',
     '304.0 -> 172.0',
     '304.0 -> 273.0',
+    '382.2 -> 250.1',
     '459.0 -> 182.0', 
     '459.0 -> 327.0', 
     '318.0 -> 169.0',
@@ -103,8 +114,15 @@ ms_filters_keys = [
     '302.0 -> 153.0',
     '316.0 -> 170.0',
     '290.0 -> 158.0',
+    '426.0 -> 163.0',
+    '426.0 -> 295.0',
+    '312.0 -> 163.0',
+    '312.0 -> 295.0',
     '410.0 -> 163.0',
     '410.0 -> 295.0',
+    '255.1 -> 123.1',
+    '275.1 -> 129.0',
+    '307.0 -> 175.0',
     '413.0 -> 281.0',
     '259.0 -> 113.0', 
     '245.0 -> 191.0'
@@ -132,14 +150,18 @@ ms_filters_name = [
     ['D_97'],
     ['g6A'],
     ['Gm'], 
-    ['i6A'], 
+    ['i6A'],
+    ['imG-14'],
+    ['inm5U'],
     ['io6A'], 
+    ['k2C'],
     ['m1A', 'm2A', 'm6A', 'm8A'], 
     ['m227G'], 
     ['m22G'], 
     ['m28A', 'm62A'], 
     ['m3C', 'm5C'],
-    ['m3U', 'm5U'], 
+    ['m3U', 'm5U'],
+    ['m4Cm/m5Cm'], 
     ['m5s2U', 'mo5U'], 
     ['m5Um'], 
     ['m6Am'], 
@@ -151,6 +173,7 @@ ms_filters_name = [
     ['mcmo5U_315'], 
     ['mnm5s2U_172'], 
     ['mnm5s2U_273'],
+    ['ms2i6A'],
     ['ms2t6A_182'], 
     ['ms2t6A_327'],
     ['ncm5s2U_169'],
@@ -159,8 +182,15 @@ ms_filters_name = [
     ['ncm5U_153'],
     ['ncm5Um'],
     ['nm5s2U_158'],
+    ['oQ_163'],
+    ['oQ_295'],
+    ['preQ1_163'],
+    ['preQ1_295'],
     ['Q_163'],
     ['Q_295'],
+    ['rNA'],
+    ['s2Um'],
+    ['se2U'],
     ['t6A'],
     ['Um'],
     ['Y_191']

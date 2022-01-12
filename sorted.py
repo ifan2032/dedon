@@ -66,10 +66,11 @@ def parseMS():
     ms_data = {}
     for column in data['Columns']:
         ms_tmp = {} 
-        for i in range(4, len(var_names)):
+        for i in range(3, len(var_names)):
             name = var_names[i]
             ms_tmp[name] = []
         ms_data[column] = ms_tmp
+    #print("var_names", var_names)
         
     filename = files[1]
     fields = []
@@ -95,13 +96,13 @@ def parseMS():
                     for j in list(ms_filters.keys()):
                         if j in col:
                             divider_indices[ms_filters_keys.index(j)].append(i)
-
+    divider_indices_two.append(len(rows))
     for k in range(len(divider_indices)):
         countera = 0
         a = 0
         for divider_index in divider_indices[k]:
             countera += 1
-            stop_index = divider_indices_two[divider_indices_two.index(divider_index)+1]
+            stop_index = divider_indices_two[(divider_indices_two.index(divider_index)+1)]
             curRow = 0 
             counter = 0
             a += 1
@@ -116,8 +117,9 @@ def parseMS():
                 name = row[0].split('\\')[-1].strip()
                 
                 for (start, end) in list(ms_values.keys()):
-                    if start <= rt and rt <= end and ms_values[(start, end)] in ms_filters[ms_filters_keys[k]]:
-                        ms_data[name][ms_values[(start, end)]].append(float(row[6]))
+                    for value in ms_values[(start, end)]:
+                        if start <= rt and rt <= end and value in ms_filters[ms_filters_keys[k]]:
+                            ms_data[name][value].append(float(row[6]))
 
     
     for row in data['Columns']:
@@ -158,7 +160,6 @@ print("#############---- End ----##############")
 
 # Export 
 
-print(data)
 
 with open('results.csv', 'w') as f:
     for key in data.keys():
