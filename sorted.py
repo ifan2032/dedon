@@ -13,7 +13,7 @@ def parseUV():
         fields = next(csvreader)
         for row in csvreader:
             rows.append(row)
-        
+        print(rows)
     divider_indices = []
     for i in range(len(rows)):
         row = rows[i]
@@ -71,6 +71,7 @@ def parseMS():
             ms_tmp[name] = []
         ms_data[column] = ms_tmp
     #print("var_names", var_names)
+
         
     filename = files[1]
     fields = []
@@ -104,7 +105,7 @@ def parseMS():
             countera += 1
             stop_index = divider_indices_two[(divider_indices_two.index(divider_index)+1)]
             curRow = 0 
-            counter = 0
+            counter = 0 # 
             a += 1
             for index in range(divider_index+2, stop_index):
                 row = rows[index]
