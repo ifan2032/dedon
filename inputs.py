@@ -5,6 +5,7 @@ files = []
 rna_values = {}
 ms_values = {}
 rows = []
+modifications = []
 
 data = { 'Columns': [] }
 
@@ -13,6 +14,12 @@ with open("input.csv", 'r') as csvfile:
     csvreader = csv.reader(csvfile)
     for row in csvreader:
         rows.append(row)
+
+with open("modification.csv", 'r') as csvfile:
+    csvreader = csv.reader(csvfile)
+    for row in csvreader:
+        modifications.append(row)
+
 
 # row1 : variable names
 var_names = []
@@ -30,7 +37,6 @@ for index in range(len(rows[2])):
     delta = rows[2][index]
     name = var_names[index]
     variables[f"delta_{name}"] = float(delta.strip())
-
 
 # last row: file names
 for file_name in rows[-1]:
@@ -59,6 +65,27 @@ for i in range(3, len(var_names)):
         ms_values[(rt - delta, rt + delta)].append(name)
     else:
         ms_values[(rt - delta, rt + delta)] = [name]
+
+dummy_keys = []
+dummy_name = []
+
+for row in modifications:
+    name = row[0]
+    start = row[1].strip()
+    end = row[2].strip()
+    
+    if '.' not in start:
+        start += '.0'
+    if '.' not in end:
+        end += '.0'
+    
+    transition = f"{start} -> {end}"
+    
+    if transition in dummy_keys:
+        dummy_name[dummy_keys.index(transition)].append(name)
+    else:
+        dummy_keys.append(transition)
+        dummy_name.append([name])
 
 ms_filters_keys = [
     '298.0 -> 166.0', 
@@ -125,7 +152,12 @@ ms_filters_keys = [
     '307.0 -> 175.0',
     '413.0 -> 281.0',
     '259.0 -> 113.0', 
-    '245.0 -> 191.0'
+    '245.0 -> 191.0',
+    '348.0 -> 255.0',
+    '395.1 -> 119.0', 
+    '395.1 -> 162.0',
+    '539.2 -> 407.0',
+    '283.0 -> 137.0'
 ]
 
 ms_filters_name = [ 
@@ -141,7 +173,7 @@ ms_filters_name = [
     ['cm5U'], 
     ['cm5Um'], 
     ['cmnm5s2U_141'],
-    ['cmnm5s2U_216'],
+    ['cmnm5s2U_216', 'acp3D_216'],
     ['cmnm5U'],
     ['cmnm5Um'],
     ['cmo5U'],
@@ -193,13 +225,16 @@ ms_filters_name = [
     ['se2U'],
     ['t6A'],
     ['Um'],
-    ['Y_191']
+    ['Y_191'],
+    ['cmnm5s2U_255'],
+    ['ct6A_119'],
+    ['ct6A_162'],
+    ['gluQ'],
+    ['Im']
 ]
 
-''' For checking row inputs are valid
-for row in rows:
-    print(len(row))
-'''
+ms_filters_keys = dummy_keys
+ms_filters_name = dummy_name
 
 # directly checks if input values are valid, else throws error
 if len(rows[0]) != len(rows[1]) or len(rows[1]) != len(rows[2]):
