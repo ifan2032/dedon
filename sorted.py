@@ -109,7 +109,6 @@ def parseMS():
             for index in range(divider_index+2, stop_index):
                 row = rows[index]
 
-
                 if len(row) == 0:
                     continue
                 rt = float(row[3])

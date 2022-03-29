@@ -236,11 +236,6 @@ ms_filters_name = [
 ms_filters_keys = dummy_keys
 ms_filters_name = dummy_name
 
-'''
-for i in range(len(ms_filters_keys)):
-    print(ms_filters_keys[i], ms_filters_name[i])
-'''
-
 # directly checks if input values are valid, else throws error
 if len(rows[0]) != len(rows[1]) or len(rows[1]) != len(rows[2]):
     raise ValueError("Invalid inputs")
