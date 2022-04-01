@@ -49,13 +49,13 @@ def parseUV():
             
             if name == 'GA':
                 if len(val) <= 1:
-                    data['G'].append([])
-                    data['A'].append([])
+                    data['G'].append(0)
+                    data['A'].append(0)
                 else:
                     data['G'].append(val[0])
                     data['A'].append(val[1])
             elif len(val) == 0:
-                data[rna_values[(start, end)]].append([])
+                data[rna_values[(start, end)]].append(0)
             else:
                 data[rna_values[(start, end)]].append(max(val))
     return
@@ -128,7 +128,8 @@ def parseMS():
             if len(values[strain]) != 0:
                 data[strain].append(max(values[strain]))
             else:
-                data[strain].append(values[strain])
+                #print("values strain", values[strain])
+                data[strain].append(0)
 
 # Call Methods 
 
@@ -163,6 +164,4 @@ print("#############---- End ----##############")
 with open('results.csv', 'w') as f:
     for key in data.keys():
         f.write("%s,%s\n"%(key,','.join([str(obj) for obj in data[key]])))
-
-
 
