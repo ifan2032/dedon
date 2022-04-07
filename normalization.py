@@ -17,6 +17,7 @@ mean = {}
 mean["UV"] = sum(sum_UV)/row_len if row_len != 0 else 0
 
 normal_data = {}
+normal_data["Columns"] = data["Columns"]
 ratio_UV = []
 for index in range(len(sum_UV)):
     ratio_UV.append(sum_UV[index] / mean["UV"])
