@@ -66,6 +66,7 @@ for i in range(3, len(var_names)):
     else:
         ms_values[(rt - delta, rt + delta)] = [name]
 
+
 dummy_keys = []
 dummy_name = []
 
@@ -236,6 +237,11 @@ ms_filters_name = [
 ms_filters_keys = dummy_keys
 ms_filters_name = dummy_name
 
+
+''' 
+Try to have a separat4e list containing all modifications you would like to run
+
+'''
 # directly checks if input values are valid, else throws error
 if len(rows[0]) != len(rows[1]) or len(rows[1]) != len(rows[2]):
     raise ValueError("Invalid inputs")
