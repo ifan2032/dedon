@@ -34,7 +34,8 @@ def parseUV():
 
             if row_index == divider_indices[index]:
                 info = row[0].split('\\')
-                data['Columns'].append(info[-1].strip())
+                
+                #data['Columns'].append(info[-1].strip())
 
             if not "RT" in row and not "Area" in row and len(row) > max(time_index, area_index):
                 time = float(row[time_index])
@@ -120,16 +121,20 @@ def parseMS():
                         if start <= rt and rt <= end and value in ms_filters[ms_filters_keys[k]]:
                             ms_data[name][value].append(float(row[6]))
 
-    
+
+
+    index = 0
+
     for row in data['Columns']:
         values = ms_data[row]
-
         for strain in values:
             if len(values[strain]) != 0:
-                data[strain].append(max(values[strain]))
+                data[strain][index] = (max(values[strain]))
             else:
-                #print("values strain", values[strain])
-                data[strain].append(0)
+                data[strain][index] = 0
+        index += 1
+
+
 
 # Call Methods 
 
@@ -157,10 +162,7 @@ for pair in data:
 
 print("#############---- End ----##############")
 
-
 # Export 
-
-
 with open('results.csv', 'w') as f:
     for key in data.keys():
         f.write("%s,%s\n"%(key,','.join([str(obj) for obj in data[key]])))

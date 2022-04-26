@@ -1,4 +1,6 @@
-import csv 
+import csv
+
+from numpy import number 
 
 variables = {}
 files = []
@@ -19,7 +21,6 @@ with open("modification.csv", 'r') as csvfile:
     csvreader = csv.reader(csvfile)
     for row in csvreader:
         modifications.append(row)
-
 
 # row1 : variable names
 var_names = []
@@ -249,5 +250,56 @@ if len(rows[0]) != len(rows[1]) or len(rows[1]) != len(rows[2]):
 ms_filters = {}
 for ms_filters_key in ms_filters_keys:
     ms_filters[ms_filters_key] = ms_filters_name[ms_filters_keys.index(ms_filters_key)]
+
+rows = []
+with open("Batch table_test.csv", 'r') as csvfile:
+    csvreader = csv.reader(csvfile)
+    for row in csvreader:
+        rows.append(row[2:])
+    
+    modifications = []
+    modifications_index = []
+    for x in range(len(rows[0])):
+        if rows[0][x] and rows[0][x] != 'Sample':
+            modifications.append(rows[0][x].split(" ")[0])
+            modifications_index.append(int(x))
+
+    columns = [row[1] for row in rows]
+    data["Columns"] = columns[2:]
+
+    for modification in modifications:
+        data[modification] = []
+    
+    for row in rows[2:]:
+        for index in range(len(modifications_index)):
+            real_index = modifications_index[index]
+            
+            val = row[real_index+1]
+            modification = modifications[index]
+
+            if val:
+                val = float(val)
+
+                if float(row[real_index+1]) <= 100 or float(row[real_index+2]) < 3:
+                    val = 0
+            else:
+                val = 0
+            
+            data[modification].append(val)
+
+# fill up empty modifications
+number_of_samples = len(data['Columns'])
+for row in data:
+    if len(data[row]) == 0 and not row in ['Columns', 'C', 'U', 'G', 'A']:
+        data[row] = [0] * number_of_samples
+
+'''
+with open('Batchtable.csv', 'w') as f:
+    for key in data.keys():
+        f.write("%s,%s\n"%(key,','.join([str(obj) for obj in data[key]])))
+'''
+
+# peak area less than 100 S/N less than 3 --> make into 0
+
 
 
