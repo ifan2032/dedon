@@ -4,6 +4,7 @@ sum_UV = []
 row_len = 0
 sig_modification_size = 10
 
+
 for val in range(len(data['A'])):
     colSUM = 0
 
@@ -69,7 +70,7 @@ for col in range(len(normal_data["Columns"])):
 
 with open('normal_data.csv', 'w') as f:
     for key in normal_data.keys():
-        f.write("%s,%s\n"%(key,','.join([str(normal_data[key][index]) for index in samples_to_analyze])))
+        f.write("%s,%s\n"%(key,','.join([str(normal_data[key][index]) for index in range(len(normal_data['Columns']))])))
 
 with open('results/downregulated.csv', 'w') as f:
     f.write("%s,%s\n"%("Downregulated Samples",','.join([str(index) for index in downregulated_samples])))
@@ -77,8 +78,6 @@ with open('results/downregulated.csv', 'w') as f:
 with open('results/upregulated.csv', 'w') as f:
     f.write("%s,%s\n"%("Upregulated Samples",','.join([str(index) for index in upregulated_samples])))
 
-
 # TODO:
-
 # add a modification list for future analysis
 # put report in separate file (done)

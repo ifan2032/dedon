@@ -2,6 +2,8 @@ import csv
 import copy
 from inputs import *
 
+useMS = True 
+
 def parseUV():
     filename = files[0]
     
@@ -139,7 +141,9 @@ def parseMS():
 # Call Methods 
 
 parseUV()
-parseMS()
+
+if useMS:
+    parseMS()
 
 print("#############---- Results ----##############")
 

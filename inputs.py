@@ -252,7 +252,7 @@ for ms_filters_key in ms_filters_keys:
     ms_filters[ms_filters_key] = ms_filters_name[ms_filters_keys.index(ms_filters_key)]
 
 rows = []
-with open("Batch table_test.csv", 'r') as csvfile:
+with open("Batchtabletest.csv", 'r') as csvfile:
     csvreader = csv.reader(csvfile)
     for row in csvreader:
         rows.append(row[2:])
