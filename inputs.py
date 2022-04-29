@@ -290,7 +290,7 @@ with open("Batchtabletest.csv", 'r') as csvfile:
 # fill up empty modifications
 number_of_samples = len(data['Columns'])
 for row in data:
-    if len(data[row]) == 0 and not row in ['Columns', 'C', 'U', 'G', 'A']:
+    if len(data[row]) == 0 and not row in ['Columns']:
         data[row] = [0] * number_of_samples
 
 '''
@@ -298,7 +298,6 @@ with open('Batchtable.csv', 'w') as f:
     for key in data.keys():
         f.write("%s,%s\n"%(key,','.join([str(obj) for obj in data[key]])))
 '''
-
 # peak area less than 100 S/N less than 3 --> make into 0
 
 

@@ -46,3 +46,4 @@ for row in template:
                 print("data:", data[row][index_data], "template", val)
         else:
             print("SAMPLE", sample)
+print(bad_val)

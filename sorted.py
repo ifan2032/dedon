@@ -28,9 +28,11 @@ def parseUV():
 
     for index in range(len(divider_indices)-1):
         area_data = copy.deepcopy(rna_values)
+        sample_name = rows[divider_indices[index]][0].split("\\")[-1].strip()
         for key in area_data:
             area_data[key] = []
         
+
         for row_index in range(divider_indices[index], divider_indices[index+1]):
             row = rows[row_index]
 
@@ -45,22 +47,21 @@ def parseUV():
                 for (start, end) in rna_values:
                     if start <= time and time <= end:
                         area_data[(start, end)].append(area)
-        
         for (start, end) in area_data:
             val = area_data[(start, end)]
             name = rna_values[(start, end)]
-            
+            sample_name_index = data["Columns"].index(sample_name)
             if name == 'GA':
                 if len(val) <= 1:
-                    data['G'].append(0)
-                    data['A'].append(0)
+                    data['G'][sample_name_index] = 0
+                    data['A'][sample_name_index] = 0
                 else:
-                    data['G'].append(val[0])
-                    data['A'].append(val[1])
+                    data['G'][sample_name_index] = val[0]
+                    data['A'][sample_name_index] = val[1]
             elif len(val) == 0:
-                data[rna_values[(start, end)]].append(0)
+                data[rna_values[(start, end)]][sample_name_index] = 0
             else:
-                data[rna_values[(start, end)]].append(max(val))
+                data[rna_values[(start, end)]][sample_name_index] = max(val)
     return
 
 def parseMS():
