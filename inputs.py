@@ -11,7 +11,10 @@ modifications = []
 
 data = { 'Columns': [] }
 
-
+'''
+input.csv contains data regarding modifications, retention times, retention windows
+modification.csv contains table with all modifications
+'''
 
 with open("Inputs/input.csv", 'r') as csvfile:
     csvreader = csv.reader(csvfile)
@@ -45,6 +48,7 @@ for file_name in rows[-1]:
     files.append(file_name.strip())
 
 for var in var_names:
+    # we want to put G and A under the same modification due to how close their retention times are
     if var == 'GA':
         data['G'] = []
         data['A'] = []
@@ -241,7 +245,7 @@ ms_filters_name = dummy_name
 
 
 ''' 
-Try to have a separat4e list containing all modifications you would like to run
+Try to have a separate list containing all modifications you would like to run
 
 '''
 # directly checks if input values are valid, else throws error

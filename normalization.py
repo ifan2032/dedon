@@ -65,8 +65,8 @@ upregulated_values = {}
 downregulated_values = {}
 
 for col in range(len(normal_data["Columns"])):
-    upregulated = 0 #defined as >= 2
-    downregulated = 0 #defined as nonzero and <0.5
+    upregulated = 0 # defined as >= 2
+    downregulated = 0 # defined as nonzero and <0.5
 
     upregulated_modifications = []
     downregulated_modifications = []
