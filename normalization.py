@@ -90,16 +90,16 @@ for col in range(len(normal_data["Columns"])):
 
 print(upregulated_values)
 
-with open('normal_data.csv', 'w') as f:
+with open('Results/normal_data.csv', 'w') as f:
     for key in normal_data.keys():
         f.write("%s,%s\n"%(key,','.join([str(normal_data[key][index]) for index in range(len(normal_data['Columns']))])))
 
-with open('results/downregulated.csv', 'w') as f:
+with open('Results/downregulated.csv', 'w') as f:
     f.write("Downregulated Samples, defined as normalization < 0.5\n\n")
     for key in downregulated_values.keys():
         f.write("%s,%s\n"%(key,','.join([str(obj) for obj in downregulated_values[key]])))
 
-with open('results/upregulated.csv', 'w') as f:
+with open('Results/upregulated.csv', 'w') as f:
     f.write("Upregulated Samples, defined as normalization > 2\n\n")
     for key in upregulated_values.keys():
         f.write("%s,%s\n"%(key,','.join([str(obj) for obj in upregulated_values[key]])))

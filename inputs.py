@@ -12,12 +12,13 @@ modifications = []
 data = { 'Columns': [] }
 
 
-with open("input.csv", 'r') as csvfile:
+
+with open("Inputs/input.csv", 'r') as csvfile:
     csvreader = csv.reader(csvfile)
     for row in csvreader:
         rows.append(row)
 
-with open("modification.csv", 'r') as csvfile:
+with open("Inputs/modification.csv", 'r') as csvfile:
     csvreader = csv.reader(csvfile)
     for row in csvreader:
         modifications.append(row)
@@ -252,7 +253,7 @@ for ms_filters_key in ms_filters_keys:
     ms_filters[ms_filters_key] = ms_filters_name[ms_filters_keys.index(ms_filters_key)]
 
 rows = []
-with open("Batchtabletest.csv", 'r') as csvfile:
+with open(files[2], 'r') as csvfile:
     csvreader = csv.reader(csvfile)
     for row in csvreader:
         rows.append(row[2:])
@@ -293,11 +294,6 @@ for row in data:
     if len(data[row]) == 0 and not row in ['Columns']:
         data[row] = [0] * number_of_samples
 
-'''
-with open('Batchtable.csv', 'w') as f:
-    for key in data.keys():
-        f.write("%s,%s\n"%(key,','.join([str(obj) for obj in data[key]])))
-'''
 # peak area less than 100 S/N less than 3 --> make into 0
 
 
