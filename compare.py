@@ -34,16 +34,15 @@ for row in template:
     for index in range(number_of_samples):
         sample = template['Columns'][index]
         val = template[row][index]
-        print("row:", row, "index", index, "val", val)
+
         if not val:
             val = 0
-        #print("val", val, row, index)
+
         if sample in data['Columns']:
             index_data = data['Columns'].index(sample)
-            print("compare| data:", data[row][index_data], "sample:", val)
-            if abs(float(data[row][index_data]) - float(val)) > 0.01:
+            if abs(float(data[row][index_data]) - float(val)) > 0.20 and val != 0 and abs(float(data[row][index_data])-0.0) > 0.01:
                 bad_val += 1
-                print("data:", data[row][index_data], "template", val)
+                print("bad val data:", data[row][index_data], "template", val)
         else:
             print("SAMPLE", sample)
 print(bad_val)

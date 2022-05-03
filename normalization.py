@@ -1,7 +1,7 @@
 from sorted import *
 
 row_len = 0
-sig_modification_size = 10
+sig_modification_size = 3
 
 sum_UV = []
 
@@ -21,7 +21,6 @@ for val in range(len(data['A'])):
     if colSUM != 0:
         row_len += 1
 
-print("AH", sum_UV[68])
 mean = {}
 mean["UV"] = sum(sum_UV)/row_len if row_len != 0 else 0
 
@@ -31,17 +30,10 @@ ratio_UV = []
 for index in range(len(sum_UV)):
     ratio_UV.append(sum_UV[index] / mean["UV"])
 
-    if index == 68:
-        print(sum_UV[index], mean["UV"])
-
 for row in list(data.keys())[1:]:
     normal_row = []
     for index in range(len(data[row])):
         normal_row.append(data[row][index] / ratio_UV[index])
-
-        if row == 'Y_191' and index == 68:
-            print("raw", data[row][index], ratio_UV[index], "ratio", data[row][index] / ratio_UV[index])
-    
 
     normal_data[row] = normal_row
 
@@ -61,10 +53,6 @@ for row in list(data.keys())[1:]:
     for index in range(len(data[row])):
         if mean[row] != 0:
 
-            if row == 'Y_191' and index == 68:
-                print(normal_data[row][index], mean[row], normal_data[row][index]/mean[row] )
-                print("raw", data[row][index])
-
             normal_data[row][index] /= mean[row]
 
 
@@ -73,32 +61,49 @@ for row in list(data.keys())[1:]:
 
 upregulated_samples = []
 downregulated_samples = []
+upregulated_values = {}
+downregulated_values = {}
 
 for col in range(len(normal_data["Columns"])):
     upregulated = 0 #defined as >= 2
     downregulated = 0 #defined as nonzero and <0.5
+
+    upregulated_modifications = []
+    downregulated_modifications = []
+
     for row in list(data.keys())[1:]:
         
         if normal_data[row][col] >= 2:
             upregulated += 1
+            upregulated_modifications.append(row)
         
         if (normal_data[row][col] <= 0.5 and normal_data[row][col] != 0):
             downregulated += 1
+            downregulated_modifications.append(row)
     
     if upregulated >= sig_modification_size: #make this a parameter
         upregulated_samples.append(data["Columns"][col])
+        upregulated_values[data["Columns"][col]] = upregulated_modifications
     elif downregulated >= sig_modification_size:
         downregulated_samples.append(data["Columns"][col])
+        downregulated_values[data["Columns"][col]] = downregulated_modifications
+
+print(upregulated_values)
 
 with open('normal_data.csv', 'w') as f:
     for key in normal_data.keys():
         f.write("%s,%s\n"%(key,','.join([str(normal_data[key][index]) for index in range(len(normal_data['Columns']))])))
 
 with open('results/downregulated.csv', 'w') as f:
-    f.write("%s,%s\n"%("Downregulated Samples",','.join([str(index) for index in downregulated_samples])))
+    f.write("Downregulated Samples, defined as normalization < 0.5\n\n")
+    for key in downregulated_values.keys():
+        f.write("%s,%s\n"%(key,','.join([str(obj) for obj in downregulated_values[key]])))
 
 with open('results/upregulated.csv', 'w') as f:
-    f.write("%s,%s\n"%("Upregulated Samples",','.join([str(index) for index in upregulated_samples])))
+    f.write("Upregulated Samples, defined as normalization > 2\n\n")
+    for key in upregulated_values.keys():
+        f.write("%s,%s\n"%(key,','.join([str(obj) for obj in upregulated_values[key]])))
 
 # TODO:
 # CHECK PLATE 3-3
+# If UV is less than 50 percent of mean, throw out the sample
