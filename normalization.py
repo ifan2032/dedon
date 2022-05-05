@@ -1,7 +1,7 @@
 from sorted import *
 
 row_len = 0
-sig_modification_size = 3
+sig_modification_size = 5
 
 sum_UV = []
 
@@ -88,7 +88,7 @@ for col in range(len(normal_data["Columns"])):
         downregulated_samples.append(data["Columns"][col])
         downregulated_values[data["Columns"][col]] = downregulated_modifications
 
-print(upregulated_values)
+print("upregulated samples", upregulated_samples)
 
 with open('Results/normal_data.csv', 'w') as f:
     for key in normal_data.keys():
@@ -104,6 +104,24 @@ with open('Results/upregulated.csv', 'w') as f:
     for key in upregulated_values.keys():
         f.write("%s,%s\n"%(key,','.join([str(obj) for obj in upregulated_values[key]])))
 
+with open('Results/upregulated.csv', 'w') as f:
+    f.write("Upregulated Samples, defined as normalization > 2\n\n")
+    for key in upregulated_values.keys():
+        f.write("%s,%s\n"%(key,','.join([str(obj) for obj in upregulated_values[key]])))
+
+with open('Results/upregulated_data.csv', 'w') as f:
+    f.write("Upregulated Samples containing all modifications, defined as normalization > 2\n\n")
+
+    for modification in upregulated_samples:
+        index = normal_data["Columns"].index(modification)
+        for row in normal_data:
+            f.write(str(normal_data[row][index]))
+
+
+    #for key in upregulated_values.keys():
+    #   f.write("%s,%s\n"%(key,','.join([str(obj) for obj in upregulated_values[key]])))
+
+# print out all modifications for upregulated and downregulated samples
 # TODO:
 # CHECK PLATE 3-3
 # If UV is less than 50 percent of mean, throw out the sample

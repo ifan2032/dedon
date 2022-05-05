@@ -269,7 +269,7 @@ with open(files[2], 'r') as csvfile:
             modifications.append(rows[0][x].split(" ")[0])
             modifications_index.append(int(x))
 
-    columns = [row[1] for row in rows]
+    columns = [row[0] for row in rows] #changed this when batch table was modified
     data["Columns"] = columns[2:]
 
     for modification in modifications:
