@@ -59,14 +59,14 @@ for row in list(data.keys())[1:]:
             if normal_data[row][index] >= 2 or (normal_data[row][index] <= 0.5 and normal_data[row][index] != 0):
                 samples_to_analyze.add(index)
 
-upregulated_samples = []
-downregulated_samples = []
-upregulated_values = {}
-downregulated_values = {}
+upregulated_samples = [] #list upregulated samples names
+downregulated_samples = [] #list downregulated samples names
+upregulated_values = {} #list upregulated sample names with the significant modifications
+downregulated_values = {} #list downregulated sample names with the significant modifications
 
 for col in range(len(normal_data["Columns"])):
     upregulated = 0 # defined as >= 2
-    downregulated = 0 # defined as nonzero and <0.5
+    downregulated = 0 # defined as nonzero and < 0.5
 
     upregulated_modifications = []
     downregulated_modifications = []
@@ -88,7 +88,21 @@ for col in range(len(normal_data["Columns"])):
         downregulated_samples.append(data["Columns"][col])
         downregulated_values[data["Columns"][col]] = downregulated_modifications
 
-print("upregulated samples", upregulated_samples)
+upregulated_data = {}
+downregulated_data = {}
+for row in normal_data:
+    upregulated_data[row] = []
+    downregulated_data[row] = []
+
+for sample in upregulated_samples:
+    index = normal_data["Columns"].index(sample)
+    for key in list(normal_data.keys()):
+        upregulated_data[key].append(normal_data[key][index])
+
+for sample in downregulated_samples:
+    index = normal_data["Columns"].index(sample)
+    for key in list(normal_data.keys()):
+        downregulated_data[key].append(normal_data[key][index])
 
 with open('Results/normal_data.csv', 'w') as f:
     for key in normal_data.keys():
@@ -104,22 +118,22 @@ with open('Results/upregulated.csv', 'w') as f:
     for key in upregulated_values.keys():
         f.write("%s,%s\n"%(key,','.join([str(obj) for obj in upregulated_values[key]])))
 
-with open('Results/upregulated.csv', 'w') as f:
-    f.write("Upregulated Samples, defined as normalization > 2\n\n")
-    for key in upregulated_values.keys():
-        f.write("%s,%s\n"%(key,','.join([str(obj) for obj in upregulated_values[key]])))
-
 with open('Results/upregulated_data.csv', 'w') as f:
     f.write("Upregulated Samples containing all modifications, defined as normalization > 2\n\n")
 
-    for modification in upregulated_samples:
-        index = normal_data["Columns"].index(modification)
-        for row in normal_data:
-            f.write(str(normal_data[row][index]))
+    for key in upregulated_data.keys():
+        f.write("%s,%s\n"%(key,','.join([str(obj) for obj in upregulated_data[key]])))
+
+with open('Results/downregulated_data.csv', 'w') as f:
+    f.write("Downregulated Samples containing all modifications, defined as normalization < 0.5\n\n")
+
+    for key in downregulated_data.keys():
+        f.write("%s,%s\n"%(key,','.join([str(obj) for obj in downregulated_data[key]])))
 
 
-    #for key in upregulated_values.keys():
-    #   f.write("%s,%s\n"%(key,','.join([str(obj) for obj in upregulated_values[key]])))
+
+
+
 
 # print out all modifications for upregulated and downregulated samples
 # TODO:
