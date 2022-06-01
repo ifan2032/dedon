@@ -2,7 +2,7 @@ import csv
 import copy
 from inputs import *
 
-useMS = True 
+useMS = False 
 
 def parseUV():
     filename = files[0]
@@ -47,6 +47,7 @@ def parseUV():
                 for (start, end) in rna_values:
                     if start <= time and time <= end:
                         area_data[(start, end)].append(area)
+
         for (start, end) in area_data:
             val = area_data[(start, end)]
             name = rna_values[(start, end)]
@@ -146,6 +147,7 @@ parseUV()
 if useMS:
     parseMS()
 
+
 print("#############---- Results ----##############")
 
 #find highest peak 
@@ -166,6 +168,7 @@ for pair in data:
     lengths[pair] = len(data[pair]) - s
 
 print("#############---- End ----##############")
+
 
 # Export 
 with open('Results/results.csv', 'w') as f:

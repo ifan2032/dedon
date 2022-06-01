@@ -1,7 +1,8 @@
+from numpy import true_divide
 from sorted import *
 
 row_len = 0
-sig_modification_size = 5
+sig_modification_size =  1
 
 sum_UV = []
 
@@ -64,6 +65,19 @@ downregulated_samples = [] #list downregulated samples names
 upregulated_values = {} #list upregulated sample names with the significant modifications
 downregulated_values = {} #list downregulated sample names with the significant modifications
 
+# Purpose: If a modification does exist and has value 0, we want it to be flagged as downregulated
+'''
+modification_exists = {}
+for row in list(data.keys())[1:]:
+    modification_exists[row] = False
+    for col in range(len(normal_data["Columns"])):
+        if normal_data[row][col] > 0:
+            modification_exists[row] = True
+            print(row, normal_data[row])
+            break
+'''
+
+
 for col in range(len(normal_data["Columns"])):
     upregulated = 0 # defined as >= 2
     downregulated = 0 # defined as nonzero and < 0.5
@@ -71,13 +85,12 @@ for col in range(len(normal_data["Columns"])):
     upregulated_modifications = []
     downregulated_modifications = []
 
-    for row in list(data.keys())[1:]:
-        
+    for row in list(data.keys())[1:]:        
         if normal_data[row][col] >= 2:
             upregulated += 1
             upregulated_modifications.append(row)
         
-        if (normal_data[row][col] <= 0.5 and normal_data[row][col] != 0):
+        if (normal_data[row][col] <= 0.5): #and modification_exists[row]): USE LATER IF YOU WANT TO TRACK VALID MODIFICATIONS
             downregulated += 1
             downregulated_modifications.append(row)
     

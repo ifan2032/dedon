@@ -55,6 +55,8 @@ for var in var_names:
     else:
         data[var] = []
 
+print("data", data)
+
 for i in range(0, 3):
     name = var_names[i]
     delta = variables[f"delta_{name}"]
@@ -257,20 +259,33 @@ for ms_filters_key in ms_filters_keys:
     ms_filters[ms_filters_key] = ms_filters_name[ms_filters_keys.index(ms_filters_key)]
 
 rows = []
+
+
 with open(files[2], 'r') as csvfile:
     csvreader = csv.reader(csvfile)
     for row in csvreader:
-        rows.append(row[2:])
+        rows.append(row[2:]) # FIX THIS LINE
     
-    modifications = []
-    modifications_index = []
+    init_modifications = []
+    init_modifications_index = []
     for x in range(len(rows[0])):
         if rows[0][x] and rows[0][x] != 'Sample':
-            modifications.append(rows[0][x].split(" ")[0])
-            modifications_index.append(int(x))
+            init_modifications.append(rows[0][x].split(" ")[0])
+            init_modifications_index.append(int(x))
 
     columns = [row[0] for row in rows] #changed this when batch table was modified
     data["Columns"] = columns[2:]
+
+    modifications = []
+    modifications_index = []
+
+    for mod in list(data.keys())[1:]:
+        if mod in ['C', 'U', 'G', 'A']: #we don't want to process UV
+            continue
+        else:
+            index = init_modifications.index(mod)
+            modifications.append(init_modifications[index])
+            modifications_index.append(init_modifications_index[index])
 
     for modification in modifications:
         data[modification] = []
@@ -285,7 +300,7 @@ with open(files[2], 'r') as csvfile:
             if val:
                 val = float(val)
 
-                if float(row[real_index+1]) <= 100 or float(row[real_index+2]) < 3:
+                if float(row[real_index+1]) <= 100 or float(row[real_index+2]) < 5: #make sure t
                     val = 0
             else:
                 val = 0
@@ -298,7 +313,7 @@ for row in data:
     if len(data[row]) == 0 and not row in ['Columns']:
         data[row] = [0] * number_of_samples
 
-# peak area less than 100 S/N less than 3 --> make into 0
+# peak area less than 100 S/N less than 3 --> make into 0 MAKE
 
 
 
