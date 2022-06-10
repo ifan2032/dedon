@@ -260,11 +260,12 @@ for ms_filters_key in ms_filters_keys:
 
 rows = []
 
+print("data", data)
 
 with open(files[2], 'r') as csvfile:
     csvreader = csv.reader(csvfile)
     for row in csvreader:
-        rows.append(row[2:]) # FIX THIS LINE
+        rows.append(row[3:]) # FIX THIS LINE
     
     init_modifications = []
     init_modifications_index = []
@@ -283,9 +284,13 @@ with open(files[2], 'r') as csvfile:
         if mod in ['C', 'U', 'G', 'A']: #we don't want to process UV
             continue
         else:
-            index = init_modifications.index(mod)
-            modifications.append(init_modifications[index])
-            modifications_index.append(init_modifications_index[index])
+            # THIS CHANGRED
+            if mod in init_modifications:
+                index = init_modifications.index(mod)
+                modifications.append(init_modifications[index])
+                modifications_index.append(init_modifications_index[index])
+            else:
+                data[mod] = [] #skip all the modification queue
 
     for modification in modifications:
         data[modification] = []
@@ -293,7 +298,7 @@ with open(files[2], 'r') as csvfile:
     for row in rows[2:]:
         for index in range(len(modifications_index)):
             real_index = modifications_index[index]
-            
+            print("real index", real_index)
             val = row[real_index+1]
             modification = modifications[index]
 

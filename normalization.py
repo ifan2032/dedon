@@ -8,7 +8,6 @@ sum_UV = []
 
 sumVals = []
 
-# Current problem: misaligned around 12_A10.d
 for val in range(len(data['A'])):
     colSUM = 0
 
@@ -28,13 +27,17 @@ mean["UV"] = sum(sum_UV)/row_len if row_len != 0 else 0
 normal_data = {}
 normal_data["Columns"] = data["Columns"]
 ratio_UV = []
+
 for index in range(len(sum_UV)):
     ratio_UV.append(sum_UV[index] / mean["UV"])
 
 for row in list(data.keys())[1:]:
     normal_row = []
     for index in range(len(data[row])):
-        normal_row.append(data[row][index] / ratio_UV[index])
+        if ratio_UV[index]:
+            normal_row.append(data[row][index] / ratio_UV[index])
+        else:
+            normal_row.append(0)
 
     normal_data[row] = normal_row
 
@@ -77,7 +80,7 @@ for row in list(data.keys())[1:]:
             break
 '''
 
-
+print(list(normal_data.keys()))
 for col in range(len(normal_data["Columns"])):
     upregulated = 0 # defined as >= 2
     downregulated = 0 # defined as nonzero and < 0.5
@@ -118,8 +121,10 @@ for sample in downregulated_samples:
         downregulated_data[key].append(normal_data[key][index])
 
 with open('Results/normal_data.csv', 'w') as f:
-    for key in normal_data.keys():
-        f.write("%s,%s\n"%(key,','.join([str(normal_data[key][index]) for index in range(len(normal_data['Columns']))])))
+    f.write("%s, %s\n"%(key, ','.join([key for key in normal_data])))
+    for col in range(len(normal_data['Columns'])):
+        f.write("%s,%s\n"%('hi',','.join([str(normal_data[key][col]) for key in normal_data])))
+
 
 with open('Results/downregulated.csv', 'w') as f:
     f.write("Downregulated Samples, defined as normalization < 0.5\n\n")

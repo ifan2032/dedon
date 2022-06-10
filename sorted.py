@@ -2,7 +2,7 @@ import csv
 import copy
 from inputs import *
 
-useMS = False 
+useMS = True 
 
 def parseUV():
     filename = files[0]
