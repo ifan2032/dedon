@@ -260,7 +260,6 @@ for ms_filters_key in ms_filters_keys:
 
 rows = []
 
-print("data", data)
 
 with open(files[2], 'r') as csvfile:
     csvreader = csv.reader(csvfile)
@@ -298,7 +297,6 @@ with open(files[2], 'r') as csvfile:
     for row in rows[2:]:
         for index in range(len(modifications_index)):
             real_index = modifications_index[index]
-            print("real index", real_index)
             val = row[real_index+1]
             modification = modifications[index]
 
@@ -319,6 +317,5 @@ for row in data:
         data[row] = [0] * number_of_samples
 
 # peak area less than 100 S/N less than 3 --> make into 0 MAKE
-
 
 

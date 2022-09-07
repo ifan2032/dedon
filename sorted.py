@@ -89,6 +89,7 @@ def parseMS():
             
     divider_indices = [ [] for _ in range(len(ms_filters.keys())) ]
     divider_indices_two = []
+
     for i in range(len(rows)):
         row = rows[i]
 
@@ -102,6 +103,7 @@ def parseMS():
                         if j in col:
                             divider_indices[ms_filters_keys.index(j)].append(i)
     divider_indices_two.append(len(rows))
+
     for k in range(len(divider_indices)):
         countera = 0
         a = 0
@@ -127,7 +129,11 @@ def parseMS():
 
 
 
+
+
     index = 0
+
+    print(data['m1G'])
 
     for row in data['Columns']:
         values = ms_data[row]
@@ -135,8 +141,12 @@ def parseMS():
             if len(values[strain]) != 0:
                 data[strain][index] = (max(values[strain]))
             else:
+                if strain == 'm1G':
+                    print(values[strain])
                 data[strain][index] = 0
         index += 1
+    
+    print(data['m1G'])
 
 
 

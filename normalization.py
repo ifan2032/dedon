@@ -29,7 +29,10 @@ normal_data["Columns"] = data["Columns"]
 ratio_UV = []
 
 for index in range(len(sum_UV)):
-    ratio_UV.append(sum_UV[index] / mean["UV"])
+    if mean["UV"]:
+        ratio_UV.append(sum_UV[index] / mean["UV"])
+    else:
+        ratio_UV.append(0)
 
 for row in list(data.keys())[1:]:
     normal_row = []
