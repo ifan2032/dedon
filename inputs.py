@@ -245,11 +245,6 @@ ms_filters_name = [
 ms_filters_keys = dummy_keys
 ms_filters_name = dummy_name
 
-
-''' 
-Try to have a separate list containing all modifications you would like to run
-
-'''
 # directly checks if input values are valid, else throws error
 if len(rows[0]) != len(rows[1]) or len(rows[1]) != len(rows[2]):
     raise ValueError("Invalid inputs")

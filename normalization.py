@@ -5,7 +5,6 @@ row_len = 0
 sig_modification_size =  1
 
 sum_UV = []
-
 sumVals = []
 
 for val in range(len(data['A'])):
@@ -72,16 +71,7 @@ upregulated_values = {} #list upregulated sample names with the significant modi
 downregulated_values = {} #list downregulated sample names with the significant modifications
 
 # Purpose: If a modification does exist and has value 0, we want it to be flagged as downregulated
-'''
-modification_exists = {}
-for row in list(data.keys())[1:]:
-    modification_exists[row] = False
-    for col in range(len(normal_data["Columns"])):
-        if normal_data[row][col] > 0:
-            modification_exists[row] = True
-            print(row, normal_data[row])
-            break
-'''
+
 
 print(list(normal_data.keys()))
 for col in range(len(normal_data["Columns"])):
@@ -100,7 +90,7 @@ for col in range(len(normal_data["Columns"])):
             downregulated += 1
             downregulated_modifications.append(row)
     
-    if upregulated >= sig_modification_size: #make this a parameter
+    if upregulated >= sig_modification_size:
         upregulated_samples.append(data["Columns"][col])
         upregulated_values[data["Columns"][col]] = upregulated_modifications
     elif downregulated >= sig_modification_size:
@@ -126,7 +116,7 @@ for sample in downregulated_samples:
 with open('Results/normal_data.csv', 'w') as f:
     f.write("%s, %s\n"%(key, ','.join([key for key in normal_data])))
     for col in range(len(normal_data['Columns'])):
-        f.write("%s,%s\n"%('hi',','.join([str(normal_data[key][col]) for key in normal_data])))
+        f.write("%s,%s\n"%(key,','.join([str(normal_data[key][col]) for key in normal_data])))
 
 
 with open('Results/downregulated.csv', 'w') as f:
@@ -150,13 +140,3 @@ with open('Results/downregulated_data.csv', 'w') as f:
 
     for key in downregulated_data.keys():
         f.write("%s,%s\n"%(key,','.join([str(obj) for obj in downregulated_data[key]])))
-
-
-
-
-
-
-# print out all modifications for upregulated and downregulated samples
-# TODO:
-# CHECK PLATE 3-3
-# If UV is less than 50 percent of mean, throw out the sample
